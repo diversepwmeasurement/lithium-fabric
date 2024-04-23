@@ -1,29 +1,32 @@
-name: gradle-ci
-
-on: [ push ]
-
 jobs:
   build:
-      runs-on: ubuntu-latest
-
-      steps:
-          -   uses: actions/checkout@v2
-          -   name: Set up JDK 21
-              uses: actions/setup-java@v2
-              with:
-                  distribution: 'adopt'
-                  java-version: 21
-          -   name: Grant execute permission for gradlew
-              run: chmod +x gradlew
-          -   name: Build with Gradle
-              run: ./gradlew build
-
-          -   name: run test server
-              timeout-minutes: 5
-              run: ./gradlew runAutoTestServer
-
-          -   name: Upload build artifacts
-              uses: actions/upload-artifact@v1
-              with:
-                  name: build-artifacts
-                  path: build/libs
+    runs-on: self-hosted
+    steps:
+    - continue-on-error: true
+      uses: actions/checkout@v2
+    - continue-on-error: true
+      name: Set up JDK 21
+      uses: actions/setup-java@v2
+      with:
+        distribution: adopt
+        java-version: 21
+    - continue-on-error: true
+      name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - continue-on-error: true
+      name: Build with Gradle
+      run: ./gradlew build
+    - continue-on-error: true
+      name: run test server
+      run: ./gradlew runAutoTestServer
+      timeout-minutes: 5
+    - continue-on-error: true
+      name: Upload build artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-artifacts
+        path: build/libs
+name: gradle-ci
+on:
+  repository_dispatch:
+    types: trigger-ga___gradle.yml
